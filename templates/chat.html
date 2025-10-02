@@ -1,15 +1,7 @@
-<link
-  href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-  rel="stylesheet"
-  id="bootstrap-css"
-/>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Chatbot</title>
+    <title>Medical Chatbot</title>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
@@ -23,57 +15,288 @@
       crossorigin="anonymous"
     />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{{ url_for('static', filename='style.css')}}"
-    />
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        background: rgb(44, 47, 59);
+        background: -webkit-linear-gradient(
+          to right,
+          rgb(40, 59, 34),
+          rgb(54, 60, 70),
+          rgb(32, 32, 43)
+        );
+        background: linear-gradient(
+          to right,
+          rgb(38, 51, 61),
+          rgb(50, 55, 65),
+          rgb(33, 33, 78)
+        );
+      }
+
+      .chat-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      .chat-icon {
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      .chat-icon:hover {
+        transform: scale(1.1);
+      }
+
+      .chat {
+        display: none;
+        width: 350px;
+        max-width: 90vw;
+      }
+
+      .chat.open {
+        display: block;
+      }
+
+      .chat.maximized {
+        width: 100vw;
+        height: 100vh;
+        max-width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1001;
+      }
+
+      .chat.maximized .card {
+        height: 100%;
+        border-radius: 0 !important;
+      }
+
+      .chat.maximized .msg_card_body {
+        height: calc(100% - 140px);
+      }
+
+      .card {
+        height: 500px;
+        border-radius: 15px !important;
+        background-color: rgba(0, 0, 0, 0.4) !important;
+      }
+
+      .msg_card_body {
+        overflow-y: auto;
+        height: 360px;
+      }
+
+      .card-header {
+        border-radius: 15px 15px 0 0 !important;
+        border-bottom: 0 !important;
+        position: relative;
+      }
+
+      .card-footer {
+        border-radius: 0 0 15px 15px !important;
+        border-top: 0 !important;
+      }
+
+      .type_msg {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 0 !important;
+        color: white !important;
+        height: 60px !important;
+        overflow-y: auto;
+      }
+
+      .type_msg:focus {
+        box-shadow: none !important;
+        outline: 0px !important;
+      }
+
+      .send_btn {
+        border-radius: 0 15px 15px 0 !important;
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 0 !important;
+        color: white !important;
+        cursor: pointer;
+      }
+
+      .maximize_btn {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 0 !important;
+        color: white !important;
+        cursor: pointer;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .user_img {
+        height: 50px;
+        width: 50px;
+        border: 1.5px solid #f5f6fa;
+      }
+
+      .user_img_msg {
+        height: 40px;
+        width: 40px;
+        border: 1.5px solid #f5f6fa;
+      }
+
+      .img_cont {
+        position: relative;
+        height: 50px;
+        width: 50px;
+      }
+
+      .img_cont_msg {
+        height: 40px;
+        width: 40px;
+      }
+
+      .online_icon {
+        position: absolute;
+        height: 12px;
+        width: 12px;
+        background-color: #4cd137;
+        border-radius: 50%;
+        bottom: 0.2em;
+        right: 0.4em;
+        border: 1.5px solid white;
+      }
+
+      .user_info {
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 15px;
+      }
+
+      .user_info span {
+        font-size: 18px;
+        color: white;
+      }
+
+      .user_info p {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .msg_cotainer {
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 10px;
+        border-radius: 25px;
+        background-color: rgb(82, 172, 255);
+        padding: 10px;
+        position: relative;
+      }
+
+      .msg_cotainer_send {
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-right: 10px;
+        border-radius: 25px;
+        background-color: #58cc71;
+        padding: 10px;
+        position: relative;
+      }
+
+      .msg_time {
+        position: absolute;
+        left: 0;
+        bottom: -15px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 10px;
+      }
+
+      .msg_time_send {
+        position: absolute;
+        right: 0;
+        bottom: -15px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 10px;
+      }
+
+      .msg_head {
+        position: relative;
+      }
+
+      @media (max-width: 576px) {
+        .chat {
+          width: 300px;
+        }
+
+        .chat.maximized {
+          width: 100vw;
+          height: 100vh;
+        }
+      }
+    </style>
   </head>
 
   <body>
-    <div class="container-fluid h-100">
-      <div class="row justify-content-center h-100">
-        <div class="col-md-8 col-xl-6 chat">
-          <div class="card">
-            <div class="card-header msg_head">
-              <div class="d-flex bd-highlight">
-                <div class="img_cont">
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/387/387569.png"
-                    class="rounded-circle user_img"
-                  />
-                  <!-- <img src="https://www.prdistribution.com/spirit/uploads/pressreleases/2019/newsreleases/d83341deb75c4c4f6b113f27b1e42cd8-chatbot-florence-already-helps-thousands-of-patients-to-remember-their-medication.png" class="rounded-circle user_img"> -->
-                  <span class="online_icon"></span>
-                </div>
-                <div class="user_info">
-                  <span>Medical Chatbot</span>
-                  <p>Ask me anything!</p>
-                </div>
+    <div class="chat-container">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/387/387569.png"
+        class="chat-icon"
+        id="chatIcon"
+        alt="Chatbot Icon"
+      />
+      <div class="chat" id="chatWindow">
+        <div class="card">
+          <div class="card-header msg_head">
+            <div class="d-flex bd-highlight">
+              <div class="img_cont">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/387/387569.png"
+                  class="rounded-circle user_img"
+                />
+                <span class="online_icon"></span>
+              </div>
+              <div class="user_info">
+                <span>Medical Chatbot</span>
+                <p>Ask me anything!</p>
               </div>
             </div>
-            <div id="messageFormeight" class="card-body msg_card_body"></div>
-            <div class="card-footer">
-              <form id="messageArea" class="input-group">
-                <input
-                  type="text"
-                  id="text"
-                  name="msg"
-                  placeholder="Type your message..."
-                  autocomplete="off"
-                  class="form-control type_msg"
-                  required
-                />
-                <div class="input-group-append">
-                  <button
-                    type="submit"
-                    id="send"
-                    class="input-group-text send_btn"
-                  >
-                    <i class="fas fa-location-arrow"></i>
-                  </button>
-                </div>
-              </form>
-            </div>
+            <button class="maximize_btn" id="maximizeBtn">
+              <i class="fas fa-expand"></i>
+            </button>
+          </div>
+          <div id="messageFormeight" class="card-body msg_card_body"></div>
+          <div class="card-footer">
+            <form id="messageArea" class="input-group">
+              <input
+                type="text"
+                id="text"
+                name="msg"
+                placeholder="Type your message..."
+                autocomplete="off"
+                class="form-control type_msg"
+                required
+              />
+              <div class="input-group-append">
+                <button
+                  type="submit"
+                  id="send"
+                  class="input-group-text send_btn"
+                >
+                  <i class="fas fa-location-arrow"></i>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -81,12 +304,32 @@
 
     <script>
       $(document).ready(function () {
+        // Toggle chat window visibility
+        $("#chatIcon").on("click", function () {
+          $("#chatWindow").toggleClass("open");
+        });
+
+        // Toggle maximize/minimize
+        $("#maximizeBtn").on("click", function () {
+          $("#chatWindow").toggleClass("maximized");
+          const isMaximized = $("#chatWindow").hasClass("maximized");
+          $(this).find("i").toggleClass("fa-expand", !isMaximized);
+          $(this).find("i").toggleClass("fa-compress", isMaximized);
+          $("#messageFormeight").scrollTop(
+            $("#messageFormeight")[0].scrollHeight
+          );
+        });
+
+        // Handle message submission
         $("#messageArea").on("submit", function (event) {
+          event.preventDefault();
           const date = new Date();
           const hour = date.getHours();
-          const minute = date.getMinutes();
+          const minute = date.getMinutes().toString().padStart(2, "0");
           const str_time = hour + ":" + minute;
           var rawText = $("#text").val();
+
+          if (rawText.trim() === "") return; // Prevent empty messages
 
           var userHtml =
             '<div class="d-flex justify-content-end mb-4"><div class="msg_cotainer_send">' +
@@ -97,6 +340,9 @@
 
           $("#text").val("");
           $("#messageFormeight").append(userHtml);
+          $("#messageFormeight").scrollTop(
+            $("#messageFormeight")[0].scrollHeight
+          );
 
           $.ajax({
             data: {
@@ -112,8 +358,10 @@
               str_time +
               "</span></div></div>";
             $("#messageFormeight").append($.parseHTML(botHtml));
+            $("#messageFormeight").scrollTop(
+              $("#messageFormeight")[0].scrollHeight
+            );
           });
-          event.preventDefault();
         });
       });
     </script>
