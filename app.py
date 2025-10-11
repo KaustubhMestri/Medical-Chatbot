@@ -37,8 +37,8 @@ docsearch = PineconeVectorStore.from_existing_index(
 retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
 
 chatModel = ChatOpenAI(
-    model_name="x-ai/grok-4-fast:free",
-    api_key="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",
+    model_name="mistralai/mistral-small-3.2-24b-instruct:free",
+    api_key="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",
     base_url="https://openrouter.ai/api/v1",
 )
 
