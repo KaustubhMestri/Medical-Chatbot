@@ -2,11 +2,6 @@
 
 **Medical Chatbot** is a Python-based healthcare assistant using Retrieval-Augmented Generation (RAG) to provide accurate medical insights and symptom analysis from "The Gale Encyclopedia of Medicine."
 
-<p align="center">
-  <a href="https://github.com/KaustubhMestri/Medical-Chatbot"><img src="https://img.shields.io/github/license/KaustubhMestri/Medical-Chatbot?style=flat-square&color=00C897" alt="license"/></a>
-  <a href="https://github.com/KaustubhMestri/Medical-Chatbot"><img src="https://img.shields.io/github/stars/KaustubhMestri/Medical-Chatbot?style=flat-square&color=00C897" alt="stars"/></a>
-</p>
-
 **Disclaimer**: For informational use only. Consult a doctor for medical advice.
 
 ## Overview
@@ -35,7 +30,6 @@ A smart chatbot that uses RAG to deliver context-aware, reliable answers to medi
 
 Install:
 
-- **Anaconda**: [Download](https://www.anaconda.com/products/distribution)
 - **Git**: [Download](https://git-scm.com/download/win)
 
 ### Clone Repository
@@ -49,13 +43,13 @@ Install:
 
 ### Set Up Environment
 
-1. Create Conda env:
+1. Create a virtual environment:
    ```bash
-   conda create --name medical-chatbot python=3.9
+   python3 -m venv medbot
    ```
 2. Activate:
    ```bash
-   conda activate medical-chatbot
+   source medbot/bin/activate
    ```
 3. Install dependencies:
    ```bash
