@@ -37,9 +37,9 @@ docsearch = PineconeVectorStore.from_existing_index(
 retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
 
 chatModel = ChatOpenAI(
-    model_name="nvidia/nemotron-nano-9b-v2:free",
-    api_key="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",
-    base_url="https://openrouter.ai/api/v1",
+    model="openai/gpt-oss-120b",
+    api_key=os.environ.get("GROQ_API_KEY"),
+    base_url="https://api.groq.com/openai/v1",
 )
 
 system_prompt = (
@@ -82,4 +82,4 @@ def chat():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port= 8080, debug= True)
+    app.run(host="0.0.0.0", port= 3000, debug= True)
